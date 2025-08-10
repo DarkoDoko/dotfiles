@@ -88,12 +88,6 @@ plugins=(git macos sdk)
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
-export JAVA_HOME=".sdkman/candidates/java/current/"
-
-export HOMEBREW_GITHUB_API_TOKEN="c5359229cf5ab1ee1c6f27f1e4a9074f31f3e8e0"
 
 source $ZSH/oh-my-zsh.sh
-
-export SDKMAN_DIR="/Users/ddoko/.sdkman"
-[[ -s "/Users/ddoko/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/ddoko/.sdkman/bin/sdkman-init.sh"
 
