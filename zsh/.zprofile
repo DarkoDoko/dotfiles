@@ -10,6 +10,11 @@ fi
 
 export JAVA_HOME=".sdkman/candidates/java/current/"
 
+# Source local secrets and machine-specific settings
+if [ -f ~/.profile.local ]; then
+  source ~/.profile.local
+fi
+
 export SDKMAN_DIR="/Users/ddoko/.sdkman"
 [[ -s "/Users/ddoko/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/ddoko/.sdkman/bin/sdkman-init.sh"
 
