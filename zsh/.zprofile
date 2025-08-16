@@ -1,4 +1,3 @@
-# Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Preferred editor for local and remote sessions
@@ -8,13 +7,13 @@ else
   export EDITOR='nvim'
 fi
 
-export JAVA_HOME=".sdkman/candidates/java/current/"
+export JAVA_HOME="$HOME/.sdkman/candidates/java/current/"
 
 # Source local secrets and machine-specific settings
-if [ -f ~/.profile.local ]; then
-  source ~/.profile.local
+if [ -f $HOME/.profile.local ]; then
+  source $HOME/.profile.local
 fi
 
-export SDKMAN_DIR="/Users/ddoko/.sdkman"
-[[ -s "/Users/ddoko/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/ddoko/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
