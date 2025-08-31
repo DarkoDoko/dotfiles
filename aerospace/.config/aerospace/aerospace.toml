@@ -180,3 +180,15 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 [workspace-to-monitor-force-assignment]
     9 = ['secondary', 'dell']
 
+[[on-window-detected]]
+    if.app-id = 'com.googlecode.iterm2'
+    run = 'move-node-to-workspace T' 
+
+[[on-window-detected]]
+    if.app-id = 'org.mozilla.firefox'
+    run = 'move-node-to-workspace F' 
+
+[[on-window-detected]]
+    if.app-id = 'com.sublimetext.4'
+    run = 'move-node-to-workspace 1' 
+
