@@ -90,4 +90,4 @@ plugins=(git macos sdk)
 #
 
 source $ZSH/oh-my-zsh.sh
-
+eval "$(/opt/homebrew/bin/brew shellenv)"
