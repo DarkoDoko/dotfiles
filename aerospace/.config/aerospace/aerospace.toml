@@ -68,7 +68,7 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     inner.vertical =   2
     outer.left =       2
     outer.bottom =     2
-    outer.top =        32
+    outer.top =        18
     outer.right =      2
 
 # 'main' binding mode declaration
