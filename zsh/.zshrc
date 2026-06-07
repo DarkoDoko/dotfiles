@@ -97,3 +97,35 @@ source <(fzf --zsh)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+rgf() {
+  local type_args=()
+  local pattern="${2:-}"
+  [[ -n "$1" ]] && type_args=(-t "$1")
+  local result
+  result=$(rg --line-number --no-heading "${type_args[@]}" "$pattern" | fzf \
+    --delimiter=: \
+    --preview "bat --color=always {1} --highlight-line {2}" \
+    --preview-window "right:60%:wrap")
+  [[ -n "$result" ]] && nvim +"$(echo "$result" | cut -d: -f2)" "$(echo "$result" | cut -d: -f1)"
+}
+
+
+bf() {
+    local log; log=$(mktemp)
+    betcore-functional "$@" 2>&1 | tee "$log"
+    local rc=${PIPESTATUS[0]}
+    printf '\n=== Failed  ===\n' "$log"
+    sed -n '/Failed scenarios:/,/scenarios (/p' "$log" \
+      | grep -oE '# file:///[^[:space:]]+\.feature:[0-9]+' \
+      | sed 's/^# //'
+    return $rc
+}
+
+. "$HOME/.local/bin/env"
+
+
+# Qwen-Code: Uses the vars above natively
+export QWEN_API_BASE="http://51.20.153.111:8000/v1"
+export QWEN_MODEL_ID="jacktime-qwen3"

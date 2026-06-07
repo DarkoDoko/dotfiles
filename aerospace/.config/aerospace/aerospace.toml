@@ -217,3 +217,23 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     if.app-id = 'com.microsoft.teams2'
     run = 'move-node-to-workspace 2' 
 
+[[on-window-detected]]
+    if.app-id = 'com.lukilabs.lukiapp'
+    run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+    if.app-id = 'com.apple.Music'
+    run = 'move-node-to-workspace 3' 
+
+[[on-window-detected]]
+    if.app-id = 'com.brave.Browser'
+    run = 'move-node-to-workspace F' 
+
+[[on-window-detected]]
+    if.app-id = 'com.mitchellh.ghostty'
+    run = 'move-node-to-workspace T'
+
+[[on-window-detected]]
+    if.app-id = 'com.anthropic.claudefordesktop'
+    run = 'move-node-to-workspace 8'
+
