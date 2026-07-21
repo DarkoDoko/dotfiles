@@ -54,6 +54,8 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
+persistent-workspaces = ["1", "2", "3", "8", "I", "F", "T"]
+
 on-window-detected = [
 
     # Terminals
