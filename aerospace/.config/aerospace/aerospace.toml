@@ -190,7 +190,7 @@ on-window-detected = [
     # Terminals
     {
         if = 'test %{app-bundle-id} = com.googlecode.iterm2'
-        run = 'move-node-to-workspace T'
+        run = ['move-node-to-workspace T']
     },
     {
         if = 'test %{app-bundle-id} = com.mitchellh.ghostty'
