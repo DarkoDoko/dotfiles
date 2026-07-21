@@ -186,71 +186,71 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 [workspace-to-monitor-force-assignment]
     9 = ['secondary', 'dell']
 
+
 on-window-detected = [
     # Terminals
     {
-        if = 'test %{app-bundle-id} = com.googlecode.iterm2'
-        run = ['move-node-to-workspace T']
+        if = 'test %{app-bundle-id} = com.googlecode.iterm2',
+        run = ['move-node-to-workspace T'],
     },
     {
-        if = 'test %{app-bundle-id} = com.mitchellh.ghostty'
-        run = ['move-node-to-workspace T']
+        if = 'test %{app-bundle-id} = com.mitchellh.ghostty',
+        run = ['move-node-to-workspace T'],
     },
 
     # Browsers
     {
-        if = 'test %{app-bundle-id} = org.mozilla.firefox'
-        run = ['move-node-to-workspace F']
+        if = 'test %{app-bundle-id} = org.mozilla.firefox',
+        run = ['move-node-to-workspace F'],
     },
     {
-        if = 'test %{app-bundle-id} = com.brave.Browser'
-        run = ['move-node-to-workspace F']
+        if = 'test %{app-bundle-id} = com.brave.Browser',
+        run = ['move-node-to-workspace F'],
     },
 
     # IDEs and Editors
     {
-        if = 'test %{app-bundle-id} = com.sublimetext.4'
-        run = ['move-node-to-workspace 1']
+        if = 'test %{app-bundle-id} = com.sublimetext.4',
+        run = ['move-node-to-workspace 1'],
     },
     {
-        if = 'test %{app-bundle-id} = com.jetbrains.intellij'
-        run = ['move-node-to-workspace I']
+        if = 'test %{app-bundle-id} = com.jetbrains.intellij',
+        run = ['move-node-to-workspace I'],
     },
     {
-        if = 'test %{app-bundle-id} = com.DanPristupov.Fork'
-        run = ['move-node-to-workspace 1']
+        if = 'test %{app-bundle-id} = com.DanPristupov.Fork',
+        run = ['move-node-to-workspace 1'],
     },
     {
-        if = 'test %{app-bundle-id} = com.electron.dockerdesktop'
-        run = ['move-node-to-workspace 1']
+        if = 'test %{app-bundle-id} = com.electron.dockerdesktop',
+        run = ['move-node-to-workspace 1'],
     },
 
     # Communication
     {
-        if = 'test %{app-bundle-id} = com.apple.iCal'
-        run = ['move-node-to-workspace 2']
+        if = 'test %{app-bundle-id} = com.apple.iCal',
+        run = ['move-node-to-workspace 2'],
     },
     {
-        if = 'test %{app-bundle-id} = com.tinyspeck.slackmacgap'
-        run = ['move-node-to-workspace 2']
+        if = 'test %{app-bundle-id} = com.tinyspeck.slackmacgap',
+        run = ['move-node-to-workspace 2'],
     },
     {
-        if = 'test %{app-bundle-id} = com.microsoft.teams2'
-        run = ['move-node-to-workspace 2']
+        if = 'test %{app-bundle-id} = com.microsoft.teams2',
+        run = ['move-node-to-workspace 2'],
     },
 
     # Media and Other
     {
-        if = 'test %{app-bundle-id} = com.lukilabs.lukiapp'
-        run = ['move-node-to-workspace 3']
+        if = 'test %{app-bundle-id} = com.lukilabs.lukiapp',
+        run = ['move-node-to-workspace 3'],
     },
     {
-        if = 'test %{app-bundle-id} = com.apple.Music'
-        run = ['move-node-to-workspace 3']
+        if = 'test %{app-bundle-id} = com.apple.Music',
+        run = ['move-node-to-workspace 3'],
     },
     {
-        if = 'test %{app-bundle-id} = com.anthropic.claudefordesktop'
-        run = ['move-node-to-workspace 8']
+        if = 'test %{app-bundle-id} = com.anthropic.claudefordesktop',
+        run = ['move-node-to-workspace 8'],
     }
 ]
-
