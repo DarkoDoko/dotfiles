@@ -124,8 +124,3 @@ bf() {
 }
 
 . "$HOME/.local/bin/env"
-
-
-# Qwen-Code: Uses the vars above natively
-export QWEN_API_BASE="http://51.20.153.111:8000/v1"
-export QWEN_MODEL_ID="jacktime-qwen3"
