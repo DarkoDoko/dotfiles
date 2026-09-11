@@ -64,7 +64,7 @@ on-window-detected = [
         run = ['move-node-to-workspace T'],
     },
     {
-        if = 'test %{app-bundle-id} = com.mitchellh.ghostty',
+        if = 'test %{app-bundle-id} = app.supabit.supacode',
         run = ['move-node-to-workspace T'],
     },
 
@@ -109,7 +109,11 @@ on-window-detected = [
         if = 'test %{app-bundle-id} = com.microsoft.teams2',
         run = ['move-node-to-workspace 2'],
     },
-
+    {
+        if = 'test %{app-bundle-id} = com.apple.mail',
+        run = ['move-node-to-workspace 2'],
+    },
+ 
     # Media and Other
     {
         if = 'test %{app-bundle-id} = com.lukilabs.lukiapp',
@@ -122,6 +126,10 @@ on-window-detected = [
     {
         if = 'test %{app-bundle-id} = com.anthropic.claudefordesktop',
         run = ['move-node-to-workspace 8'],
+    },
+    {
+        if = 'test %{app-bundle-id} = com.apple.finder',
+        run = ['move-node-to-workspace 3'],
     }
 ]
 

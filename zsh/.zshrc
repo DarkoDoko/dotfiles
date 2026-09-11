@@ -124,3 +124,6 @@ bf() {
 }
 
 . "$HOME/.local/bin/env"
+
+# jdtls wrapper (per-session Eclipse workspaces) must shadow /opt/homebrew/bin/jdtls
+export PATH="$HOME/.local/bin:$PATH"
