@@ -36,6 +36,24 @@ bindkey -M menuselect '^[[Z' reverse-menu-complete
 # sdk completion (was oh-my-zsh's sdk plugin); needs compdef, so it must come after compinit
 [ -f "$HOME/.config/zsh/sdk-completion.zsh" ] && source "$HOME/.config/zsh/sdk-completion.zsh"
 
+# --- keys ------------------------------------------------------------------
+bindkey -e
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
+
+# --- prompt ----------------------------------------------------------------
+if command -v starship >/dev/null; then
+  eval "$(starship init zsh)"
+else                                   # robbyrussell-ish fallback, no dependencies
+  autoload -Uz vcs_info
+  zstyle ':vcs_info:git:*' formats ' %F{cyan}git:(%f%F{red}%b%f%F{cyan})%f'
+  precmd() { vcs_info }
+  setopt PROMPT_SUBST
+  PROMPT='%F{green}➜%f %F{cyan}%1~%f${vcs_info_msg_0_} '
+fi
+
 source <(fzf --zsh)
 
 

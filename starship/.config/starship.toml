@@ -1,0 +1,47 @@
+# Robbyrussell-shaped prompt:  ➜  application git:(master) ✗
+# Only the modules listed in `format` are ever rendered, so no surprise aws/node/python segments.
+add_newline = false
+format = "$character$directory$git_branch$git_status$cmd_duration "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"      # turns red when the last command failed
+
+[directory]
+format = " [$path]($style)"
+style = "cyan"
+truncation_length = 1               # basename only, like robbyrussell's %c
+truncate_to_repo = false
+truncation_symbol = ""
+
+[git_branch]
+format = ' [git:\(](bold blue)[$branch](red)[\)](bold blue)'   # \( \) are escaped: bare parens mean "conditional" in starship format strings
+symbol = ""
+
+[git_status]
+format = '([ $all_status$ahead_behind]($style))'   # outer (...) = drop the whole group, space included, when the tree is clean
+style = "yellow"
+# robbyrussell showed one ✗ for "dirty". Starship reports per category, so a tree with
+# both edits and new files shows ✗✗. Blank out the ones you do not care about.
+modified = "✗"
+untracked = "✗"
+deleted = "✗"
+staged = "✗"
+renamed = "✗"
+conflicted = "="
+stashed = ""
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+
+[cmd_duration]
+min_time = 5000                     # only for commands slower than 5s, e.g. mvn install
+format = " [$duration]($style)"
+style = "dimmed white"
+
+# Optional, useful in this repo: shows the JDK when a pom.xml is present.
+# Add "$java" to `format` above to enable.
+[java]
+format = " [$symbol($version)]($style)"
+symbol = "☕ "
+style = "dimmed red"
