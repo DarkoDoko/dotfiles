@@ -29,7 +29,12 @@ alias history='fc -il 1'
 [ -d "$HOMEBREW_PREFIX/share/zsh-completions" ] && fpath=("$HOMEBREW_PREFIX/share/zsh-completions" $fpath)
 autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then compinit; else compinit -C; fi
-
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zmodload zsh/complist
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+# sdk completion (was oh-my-zsh's sdk plugin); needs compdef, so it must come after compinit
+[ -f "$HOME/.config/zsh/sdk-completion.zsh" ] && source "$HOME/.config/zsh/sdk-completion.zsh"
 
 source <(fzf --zsh)
 
