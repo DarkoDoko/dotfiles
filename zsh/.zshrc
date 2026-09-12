@@ -77,11 +77,12 @@ sdk() { unset -f sdk; . "$SDKMAN_DIR/bin/sdkman-init.sh"; sdk "$@"; }   # real s
 # node: put the nvm default version straight on PATH instead of sourcing nvm.sh (0.6s per tab).
 export NVM_DIR="$HOME/.nvm"
 if [ -r "$NVM_DIR/alias/default" ]; then                 # $(<file) is a zsh builtin read, no fork
-  _nvm_default="$NVM_DIR/versions/node/$(<"$NVM_DIR/alias/default")/bin"
+  _nvm_v="$(<"$NVM_DIR/alias/default")"          # tolerate the alias being stored with or without the leading v
+  _nvm_default="$NVM_DIR/versions/node/v${_nvm_v#v}/bin"
   [ -d "$_nvm_default" ] && export PATH="$_nvm_default:$PATH"
-  unset _nvm_default
+  unset _nvm_v _nvm_default
 fi
-nvm() { 
+nvm() {
   unset -f nvm
   . "$NVM_DIR/nvm.sh"
   [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
