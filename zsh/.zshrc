@@ -42,6 +42,10 @@ bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
 bindkey '^[[1;3D' backward-word
 bindkey '^[[1;3C' forward-word
+# Ctrl-X Ctrl-E: open the current command line in $EDITOR, save and quit to run it
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
 
 # --- prompt ----------------------------------------------------------------
 if command -v starship >/dev/null; then
@@ -54,8 +58,10 @@ else                                   # robbyrussell-ish fallback, no dependenc
   PROMPT='%F{green}➜%f %F{cyan}%1~%f${vcs_info_msg_0_} '
 fi
 
-source <(fzf --zsh)
-
+# --- plugins ---------------------------------------------------------------
+[ -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] \
+  && source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+command -v fzf    >/dev/null && source <(fzf --zsh)
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
