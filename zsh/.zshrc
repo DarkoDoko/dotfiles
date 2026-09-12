@@ -63,9 +63,15 @@ fi
   && source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 command -v fzf    >/dev/null && source <(fzf --zsh)
 
+# --- tools -----------------------------------------------------------------
+export PATH="$HOME/.local/bin:$PATH"          # jdtls wrapper, uv, anything hand-installed
+
+# node: put the nvm default version straight on PATH instead of sourcing nvm.sh (0.6s per tab).
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+_nvm_default="$NVM_DIR/versions/node/$(cat "$NVM_DIR/alias/default" 2>/dev/null)/bin"
+[ -d "$_nvm_default" ] && export PATH="$_nvm_default:$PATH"
+unset _nvm_default
+nvm() { unset -f nvm; . "$NVM_DIR/nvm.sh"; nvm "$@"; }   # real nvm on first use
 
 
 rgf() {
