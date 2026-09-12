@@ -66,6 +66,14 @@ command -v fzf    >/dev/null && source <(fzf --zsh)
 # --- tools -----------------------------------------------------------------
 export PATH="$HOME/.local/bin:$PATH"          # jdtls wrapper, anything hand-installed
 
+# java/mvnd: put the current SDKMAN candidates on PATH instead of sourcing sdkman-init.sh (0.44s per tab).
+export SDKMAN_DIR="$HOME/.sdkman"
+export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
+for _c in "$SDKMAN_DIR"/candidates/*/current/bin(N); do PATH="$_c:$PATH"; done
+unset _c
+export PATH
+sdk() { unset -f sdk; . "$SDKMAN_DIR/bin/sdkman-init.sh"; sdk "$@"; }   # real sdk on first use
+
 # node: put the nvm default version straight on PATH instead of sourcing nvm.sh (0.6s per tab).
 export NVM_DIR="$HOME/.nvm"
 if [ -r "$NVM_DIR/alias/default" ]; then                 # $(<file) is a zsh builtin read, no fork
