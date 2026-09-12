@@ -80,32 +80,10 @@ nvm() {
   nvm "$@"
 }
 
+# --- work layer (~/.dotfiles-work) -----------------------------------------
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
-rgf() {
-  local type_args=()
-  local pattern="${2:-}"
-  [[ -n "$1" ]] && type_args=(-t "$1")
-  local result
-  result=$(rg --line-number --no-heading "${type_args[@]}" "$pattern" | fzf \
-    --delimiter=: \
-    --preview "bat --color=always {1} --highlight-line {2}" \
-    --preview-window "right:60%:wrap")
-  [[ -n "$result" ]] && nvim +"$(echo "$result" | cut -d: -f2)" "$(echo "$result" | cut -d: -f1)"
-}
+# syntax highlighting must come last
+[ -f "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] \
+  && source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-
-bf() {
-    local log; log=$(mktemp)
-    betcore-functional "$@" 2>&1 | tee "$log"
-    local rc=${PIPESTATUS[0]}
-    printf '\n=== Failed  ===\n' "$log"
-    sed -n '/Failed scenarios:/,/scenarios (/p' "$log" \
-      | grep -oE '# file:///[^[:space:]]+\.feature:[0-9]+' \
-      | sed 's/^# //'
-    return $rc
-}
-
-. "$HOME/.local/bin/env"
-
-# jdtls wrapper (per-session Eclipse workspaces) must shadow /opt/homebrew/bin/jdtls
-export PATH="$HOME/.local/bin:$PATH"
