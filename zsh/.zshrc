@@ -27,6 +27,9 @@ alias history='fc -il 1'
 
 # --- completion ------------------------------------------------------------
 [ -d "$HOMEBREW_PREFIX/share/zsh-completions" ] && fpath=("$HOMEBREW_PREFIX/share/zsh-completions" $fpath)
+# Docker CLI completions (Docker Desktop re-appends its own block at the end of this
+# file on update; delete that and keep this line instead).
+[ -d "$HOME/.docker/completions" ] && fpath=("$HOME/.docker/completions" $fpath)
 autoload -Uz compinit
 if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then compinit; else compinit -C; fi
 zstyle ':completion:*' menu select
@@ -95,4 +98,3 @@ nvm() {
 # syntax highlighting must come last
 [ -f "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] \
   && source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-
