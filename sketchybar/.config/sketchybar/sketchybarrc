@@ -34,6 +34,7 @@ default=(
 sketchybar --default "${default[@]}"
 
 sketchybar --add event aerospace_workspace_change
+sketchybar --add event aerospace_mode_change
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
@@ -57,6 +58,22 @@ sketchybar --add item chevron left \
            --add item front_app left \
            --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
            --subscribe front_app front_app_switched
+
+##### Adding Aerospace Mode Indicator #####
+# Aerospace has no native "mode changed" callback, so each keybinding that
+# switches mode (see aerospace.toml) also fires this event directly.
+# Hidden while in the default "main" mode; lights up otherwise so you don't
+# get stuck in "service" mode without noticing.
+
+sketchybar --add item mode_indicator left \
+           --set mode_indicator drawing=off \
+                                 icon.drawing=off \
+                                 background.color=0xffff5555 \
+                                 background.corner_radius=5 \
+                                 background.height=20 \
+                                 background.drawing=on \
+                                 script="$PLUGIN_DIR/mode.sh" \
+           --subscribe mode_indicator aerospace_mode_change
 
 ##### Adding Right Items #####
 # In the same way as the left items we can add items to the right side.
