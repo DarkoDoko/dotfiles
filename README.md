@@ -40,6 +40,20 @@ xattr -d com.apple.quarantine ~/Library/Fonts/HackNerdFont*.ttf ~/Library/Fonts/
 
 brew services start felixkratz/formulae/sketchybar
 open -a AeroSpace   # first launch; grant Accessibility permission when macOS prompts
+
+# 6. Language runtimes the zshrc has lazy-load wiring for (Java via SDKMAN,
+#    Node via nvm). Both installers detect the existing SDKMAN_DIR/NVM_DIR
+#    lines already in zsh/.zshrc and skip appending their own init block —
+#    verify with `git -C ~/dev/dotfiles diff` after each, just in case.
+brew install bash   # macOS ships Bash 3.2; SDKMAN's installer requires Bash 4+
+export SDKMAN_AUTO_ANSWER=true
+curl -s "https://get.sdkman.io" | /opt/homebrew/bin/bash
+source ~/.sdkman/bin/sdkman-init.sh && sdk install java   # installs current default/recommended LTS
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.7/install.sh | /opt/homebrew/bin/bash
+export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh"
+nvm install --lts
+nvm alias default "$(nvm current | sed 's/^v//')"   # see gotcha below — must NOT be left as "lts/*"
 ```
 
 Where `stow <pkg>` without flags would normally target the *parent* of the repo
@@ -95,6 +109,18 @@ resolve to `$HOME` regardless of where the repo is checked out.
   doesn't clear it, log out/in (or reboot) — SIP blocks force-restarting the
   font daemon (`com.apple.FontWorker`) directly, so that's the only way to
   make CoreText fully re-scan.
+- **`node`/`npm` not found in a fresh shell after `nvm install --lts`,
+  even though `nvm current` shows the right version.** `nvm install --lts`
+  sets `~/.nvm/alias/default` to the *symbolic* tag `lts/*`, not a literal
+  version. The zshrc's PATH pre-seed (`for _c in ... alias/default ...`,
+  see comment "put the nvm default version straight on PATH instead of
+  sourcing nvm.sh") reads that file's contents directly and builds
+  `$NVM_DIR/versions/node/v<contents>/bin` — which only exists for a literal
+  version string, not `lts/*`. Fix: `nvm alias default <literal version>`
+  (e.g. `nvm alias default 24.21.0`) after install, so the alias file holds
+  a real version number. Same trap doesn't apply to SDKMAN — `sdk install`
+  already points `candidates/java/current` at a real directory, not a
+  symbolic tag.
 
 ## Per-machine setup (not tracked here)
 
@@ -109,3 +135,6 @@ These are recreated fresh on each machine, not stowed:
   `<email> <contents of id_ed25519_github.pub>`.
 - `~/.ssh/known_hosts` entry for `github.com` — verify against
   `gh api meta --jq '.ssh_keys[]'` before trusting, don't blindly accept.
+- `~/.sdkman` and `~/.nvm` — installed per the "language runtimes" bootstrap
+  step above. Python and Go are intentionally not set up yet (no version
+  manager convention established for either in this repo).
