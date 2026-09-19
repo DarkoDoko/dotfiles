@@ -32,6 +32,12 @@ brew install neovim starship fzf zsh-autosuggestions zsh-syntax-highlighting
 brew install --cask nikitabobko/tap/aerospace
 brew install felixkratz/formulae/sketchybar
 brew install --cask font-hack-nerd-font font-sketchybar-app-font
+
+# Cask-installed fonts land with com.apple.quarantine set, which silently
+# blocks macOS's font registry from activating them — SketchyBar's icon
+# glyphs render as "?" until this is cleared (see gotcha below).
+xattr -d com.apple.quarantine ~/Library/Fonts/HackNerdFont*.ttf ~/Library/Fonts/sketchybar-app-font.ttf
+
 brew services start felixkratz/formulae/sketchybar
 open -a AeroSpace   # first launch; grant Accessibility permission when macOS prompts
 ```
@@ -73,6 +79,22 @@ resolve to `$HOME` regardless of where the repo is checked out.
 - **Companion apps aren't declared anywhere machine-readable** (no
   `Brewfile` yet) — the bootstrap commands above are the closest thing to
   one. Worth turning into an actual `Brewfile` if a third machine happens.
+
+## Known gotchas
+
+- **SketchyBar icons render as `?` after a fresh font install.** Fonts
+  installed via `brew install --cask` (e.g. `font-hack-nerd-font`,
+  `font-sketchybar-app-font`) land in `~/Library/Fonts` with
+  `com.apple.quarantine` set. That flag silently stops macOS's font
+  registry from activating them — the font *file* is there, but CoreText
+  can't resolve the family name, so SketchyBar falls back to a font with no
+  glyph for the icon codepoints. Symptom: `system_profiler SPFontsDataType`
+  won't list the font at all, even though `ls ~/Library/Fonts` shows it.
+  Fix: `xattr -d com.apple.quarantine <font files>`, then
+  `brew services restart felixkratz/formulae/sketchybar`. If that alone
+  doesn't clear it, log out/in (or reboot) — SIP blocks force-restarting the
+  font daemon (`com.apple.FontWorker`) directly, so that's the only way to
+  make CoreText fully re-scan.
 
 ## Per-machine setup (not tracked here)
 
