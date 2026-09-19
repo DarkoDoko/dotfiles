@@ -1,1 +1,89 @@
 # My Dotfiles
+
+Personal machine config, managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Each top-level directory is a "package" whose contents mirror `$HOME` — stowing
+a package symlinks its files into place.
+
+Packages: `aerospace`, `ghostty`, `git`, `nvim`, `sketchybar`, `ssh`, `starship`, `zsh`.
+
+## Bootstrap on a new machine
+
+```sh
+# 1. Prerequisites (Xcode CLT + Homebrew)
+xcode-select --install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install stow
+
+# 2. Clone
+mkdir -p ~/dev && cd ~/dev
+gh repo clone DarkoDoko/dotfiles   # or: git clone git@github.com:DarkoDoko/dotfiles.git
+
+# 3. Back up anything that already exists and would conflict
+#    (fresh installs typically pre-seed ~/.gitconfig or ~/.zprofile)
+#    mv ~/.gitconfig ~/.gitconfig.bak   # etc., only if `stow -n` below reports a conflict
+
+# 4. Stow everything (dry run first)
+cd ~/dev/dotfiles
+for pkg in */; do stow -n -v "${pkg%/}"; done   # review for conflicts
+for pkg in */; do stow -v "${pkg%/}"; done      # apply
+
+# 5. Install the apps/tools the configs assume are present
+brew install neovim starship fzf zsh-autosuggestions zsh-syntax-highlighting
+brew install --cask nikitabobko/tap/aerospace
+brew install felixkratz/formulae/sketchybar
+brew install --cask font-hack-nerd-font font-sketchybar-app-font
+brew services start felixkratz/formulae/sketchybar
+open -a AeroSpace   # first launch; grant Accessibility permission when macOS prompts
+```
+
+Where `stow <pkg>` without flags would normally target the *parent* of the repo
+(wrong now that this lives at `~/dev/dotfiles` instead of `~/dotfiles`), the
+`.stowrc` file in this repo pins `--target=~` so plain `stow`/`stow -D` always
+resolve to `$HOME` regardless of where the repo is checked out.
+
+## Decisions and why
+
+- **Repo location: `~/dev/dotfiles`, not `~/dotfiles`.** Kept alongside other
+  projects rather than cluttering `$HOME` directly. Handled via `.stowrc`
+  (see above) so it doesn't matter where it's cloned as long as `.stowrc`
+  ships with it.
+- **Git identity:** `Darko Doko <darko.doko1@gmail.com>`, personal GitHub
+  account `DarkoDoko`. The `includeIf "gitdir:~/work/"` block is a hook for a
+  future work overlay (`~/.gitconfig-work`) — harmless no-op until that file
+  exists.
+- **Commit signing: SSH-based (`gpg.format = ssh`), not GPG.** Reuses the
+  GitHub auth key instead of a separate GPG key/tooling. Signing key lives at
+  `~/.ssh/id_ed25519_github.pub`; verification uses
+  `~/.ssh/allowed_signers` (not tracked in this repo — machine-local,
+  regenerated from the pubkey on each machine, see below).
+- **SSH key naming:** `~/.ssh/id_ed25519_github` (plain `github.com` host),
+  *not* the `id_ed25519_personal_github` / `github.com-personal` alias
+  convention seen in `ssh/.ssh/add_config`. That file is a leftover from
+  machines that juggled both a work and a personal GitHub identity via SSH
+  config `Host` aliases + `Include`. This machine is personal-only, so it
+  wasn't worth the extra indirection — `add_config` is stowed but currently
+  unused. If a second identity is ever needed here, wire it in via
+  `Include ~/.ssh/add_config` at the top of `~/.ssh/config` and rename the
+  key to match.
+- **`~/.ssh/config` itself is not tracked in this repo** — it's created
+  per-machine (currently just a `Host github.com` block with
+  `UseKeychain yes`). Machine-specific and holds no secrets, but keeping it
+  untracked avoids merge friction between machines with different identity
+  setups.
+- **Companion apps aren't declared anywhere machine-readable** (no
+  `Brewfile` yet) — the bootstrap commands above are the closest thing to
+  one. Worth turning into an actual `Brewfile` if a third machine happens.
+
+## Per-machine setup (not tracked here)
+
+These are recreated fresh on each machine, not stowed:
+
+- `~/.ssh/id_ed25519_github{,.pub}` — generated via `ssh-keygen -t ed25519`,
+  passphrase stored in macOS Keychain (`ssh-add --apple-use-keychain`), added
+  to GitHub via `gh ssh-key add ... --type authentication` and
+  `--type signing`.
+- `~/.ssh/config` — `Host github.com` block pointing at the key above.
+- `~/.ssh/allowed_signers` — one line:
+  `<email> <contents of id_ed25519_github.pub>`.
+- `~/.ssh/known_hosts` entry for `github.com` — verify against
+  `gh api meta --jq '.ssh_keys[]'` before trusting, don't blindly accept.
