@@ -34,6 +34,10 @@ _sdk() {
 		case "${words[2]}" in
 		i|install)
 			setopt localoptions kshglob
+			# __sdkman_list_versions only exists once sdkman-init.sh has run; the
+			# zshrc's lazy `sdk()` stub skips that until `sdk` is actually invoked,
+			# which completion bypasses entirely. Load it here instead, once.
+			(( $+functions[__sdkman_list_versions] )) || source "$SDKMAN_DIR/bin/sdkman-init.sh"
 			if [[ "${words[3]}" == 'java' ]]; then
 				compadd -X $'Installable Versions of java:\n' -- "${${${${${(f)$(__sdkman_list_versions "${words[3]}")}[@]:5:-4}[@]:#* | (local only|installed ) | *}[@]##* |            | }[@]%%+( )}"
 			else
