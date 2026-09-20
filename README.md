@@ -16,7 +16,9 @@ brew install stow
 
 # 2. Clone
 mkdir -p ~/dev && cd ~/dev
-gh repo clone DarkoDoko/dotfiles   # or: git clone git@github.com:DarkoDoko/dotfiles.git
+# neither gh nor an SSH key exists yet on a fresh machine, so clone over
+# HTTPS and switch the remote to SSH after the per-machine setup below
+git clone https://github.com/DarkoDoko/dotfiles.git
 
 # 3. Back up anything that already exists and would conflict
 #    (fresh installs typically pre-seed ~/.gitconfig or ~/.zprofile)
@@ -27,11 +29,8 @@ cd ~/dev/dotfiles
 for pkg in */; do stow -n -v "${pkg%/}"; done   # review for conflicts
 for pkg in */; do stow -v "${pkg%/}"; done      # apply
 
-# 5. Install the apps/tools the configs assume are present
-brew install neovim starship fzf zsh-autosuggestions zsh-syntax-highlighting
-brew install --cask nikitabobko/tap/aerospace
-brew install felixkratz/formulae/sketchybar
-brew install --cask font-hack-nerd-font font-sketchybar-app-font
+# 5. Install everything the configs assume is present
+brew bundle --file=~/dev/dotfiles/Brewfile
 
 # Cask-installed fonts land with com.apple.quarantine set, which silently
 # blocks macOS's font registry from activating them — SketchyBar's icon
@@ -90,9 +89,14 @@ resolve to `$HOME` regardless of where the repo is checked out.
   `UseKeychain yes`). Machine-specific and holds no secrets, but keeping it
   untracked avoids merge friction between machines with different identity
   setups.
-- **Companion apps aren't declared anywhere machine-readable** (no
-  `Brewfile` yet) — the bootstrap commands above are the closest thing to
-  one. Worth turning into an actual `Brewfile` if a third machine happens.
+- **Companion apps are declared in `Brewfile`**, installed by `brew bundle`
+  in step 5. It deliberately omits JDKs and Gradle (SDKMAN), Node (nvm) and
+  JDK Mission Control (manual Adoptium download, no reliable cask): each has
+  an ordering constraint or a version manager Homebrew would fight with, so
+  they stay as numbered steps above. Earlier revisions of this file listed
+  the apps as loose `brew install` lines, which had already drifted —
+  `ripgrep`, `fd`, `gh` and `ghostty` were assumed by the configs but never
+  installed by the bootstrap.
 
 ## Known gotchas
 
