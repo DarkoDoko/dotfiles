@@ -39,7 +39,26 @@ _sdk() {
 			# which completion bypasses entirely. Load it here instead, once.
 			(( $+functions[__sdkman_list_versions] )) || source "$SDKMAN_DIR/bin/sdkman-init.sh"
 			if [[ "${words[3]}" == 'java' ]]; then
-				compadd -X $'Installable Versions of java:\n' -- "${${${${${(f)$(__sdkman_list_versions "${words[3]}")}[@]:5:-4}[@]:#* | (local only|installed ) | *}[@]##* |            | }[@]%%+( )}"
+				# Each row is "vendor | use | version | identifier" — only the
+				# identifier is a valid `sdk install java <id>` argument, so it
+				# must be the completion match. Passing the whole row as the
+				# match (as before) made zsh backslash-escape every space and
+				# "|" in it for safe insertion, which is the wall of "\ " seen
+				# in practice. -d pairs the full row (display only, never
+				# escaped/inserted) with the identifier (the real match); -l
+				# stops zsh from packing two rows per screen line.
+				#
+				# After the version table, __sdkman_list_versions' output has
+				# a trailing "==== / legend / ---- / usage hints" block with
+				# no pipes in it at all — filtering on "has 3 pipes" isolates
+				# real rows regardless of how many trailing lines that block
+				# is (a fixed line-count slice broke here since SDKMAN added
+				# a 3-line usage hint after the legend at some point).
+				local -a _sdk_java_rows _sdk_java_ids
+				_sdk_java_rows=("${(M)${(f)$(__sdkman_list_versions "${words[3]}")}[@]:#*\|*\|*\|*}")
+				_sdk_java_rows=("${_sdk_java_rows[@]:#*Identifier}")  # drop the header row
+				_sdk_java_ids=("${_sdk_java_rows[@]##*| }")
+				compadd -X $'Installable Versions of java:\n' -l -d _sdk_java_rows -- "${_sdk_java_ids[@]}"
 			else
 				compadd -X "Installable Versions of ${words[3]}:"$'\n' -- "${${(z)${(M)${(f)${$(__sdkman_list_versions "${words[3]}")//[*+>]+( )/-}}[@]:# *}[@]}[@]:#-*}"
 			fi
