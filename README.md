@@ -67,23 +67,22 @@ resolve to `$HOME` regardless of where the repo is checked out.
   (see above) so it doesn't matter where it's cloned as long as `.stowrc`
   ships with it.
 - **Git identity:** `Darko Doko <darko.doko1@gmail.com>`, personal GitHub
-  account `DarkoDoko`. The `includeIf "gitdir:~/work/"` block is a hook for a
-  future work overlay (`~/.gitconfig-work`) — harmless no-op until that file
-  exists.
+  account `DarkoDoko`. The `includeIf "gitdir:~/work/"` block pulls in a work
+  overlay (`~/.gitconfig-work`) when that file exists, and is a harmless no-op
+  otherwise. It is the last block in `.gitconfig` on purpose: git keeps the
+  last value it reads, so the overlay has to come after anything it
+  overrides. For example, the work overlay turns off commit signing.
 - **Commit signing: SSH-based (`gpg.format = ssh`), not GPG.** Reuses the
-  GitHub auth key instead of a separate GPG key/tooling. Signing key lives at
-  `~/.ssh/id_ed25519_github.pub`; verification uses
+  GitHub auth key instead of a separate GPG key/tooling. `user.signingkey`
+  points at the personal GitHub public key; verification uses
   `~/.ssh/allowed_signers` (not tracked in this repo — machine-local,
   regenerated from the pubkey on each machine, see below).
-- **SSH key naming:** `~/.ssh/id_ed25519_github` (plain `github.com` host),
-  *not* the `id_ed25519_personal_github` / `github.com-personal` alias
-  convention seen in `ssh/.ssh/add_config`. That file is a leftover from
-  machines that juggled both a work and a personal GitHub identity via SSH
-  config `Host` aliases + `Include`. This machine is personal-only, so it
-  wasn't worth the extra indirection — `add_config` is stowed but currently
-  unused. If a second identity is ever needed here, wire it in via
-  `Include ~/.ssh/add_config` at the top of `~/.ssh/config` and rename the
-  key to match.
+- **SSH key naming isn't fixed.** Use whatever the personal GitHub key is
+  called on the machine, and make `user.signingkey` in `git/.gitconfig` point
+  at its `.pub` file. `ssh/.ssh/add_config` shows the `github.com-personal`
+  `Host` alias setup for machines that need both a work and a personal
+  identity. Wire it in with `Include ~/.ssh/add_config` at the top of
+  `~/.ssh/config` if needed.
 - **`~/.ssh/config` itself is not tracked in this repo** — it's created
   per-machine (currently just a `Host github.com` block with
   `UseKeychain yes`). Machine-specific and holds no secrets, but keeping it
@@ -130,13 +129,13 @@ resolve to `$HOME` regardless of where the repo is checked out.
 
 These are recreated fresh on each machine, not stowed:
 
-- `~/.ssh/id_ed25519_github{,.pub}` — generated via `ssh-keygen -t ed25519`,
-  passphrase stored in macOS Keychain (`ssh-add --apple-use-keychain`), added
-  to GitHub via `gh ssh-key add ... --type authentication` and
+- Personal GitHub SSH key pair: reuse an existing one or generate it via
+  `ssh-keygen -t ed25519`, passphrase stored in macOS Keychain
+  (`ssh-add --apple-use-keychain`), added to GitHub via `gh ssh-key add ... --type authentication` and
   `--type signing`.
 - `~/.ssh/config` — `Host github.com` block pointing at the key above.
 - `~/.ssh/allowed_signers` — one line:
-  `<email> <contents of id_ed25519_github.pub>`.
+  `<email> <contents of the personal GitHub public key>`.
 - `~/.ssh/known_hosts` entry for `github.com` — verify against
   `gh api meta --jq '.ssh_keys[]'` before trusting, don't blindly accept.
 - `~/.sdkman` and `~/.nvm` — installed per the "language runtimes" bootstrap
