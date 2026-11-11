@@ -81,6 +81,7 @@ sdk() { unset -f sdk; . "$SDKMAN_DIR/bin/sdkman-init.sh"; sdk "$@"; }   # real s
 export NVM_DIR="$HOME/.nvm"
 if [ -r "$NVM_DIR/alias/default" ]; then                 # $(<file) is a zsh builtin read, no fork
   _nvm_v="$(<"$NVM_DIR/alias/default")"          # tolerate the alias being stored with or without the leading v
+  repeat 5 { [ -r "$NVM_DIR/alias/$_nvm_v" ] && _nvm_v="$(<"$NVM_DIR/alias/$_nvm_v")" }   # follow aliases (lts/* -> lts/lithium -> v26.13.0)
   _nvm_default="$NVM_DIR/versions/node/v${_nvm_v#v}/bin"
   [ -d "$_nvm_default" ] && export PATH="$_nvm_default:$PATH"
   unset _nvm_v _nvm_default
