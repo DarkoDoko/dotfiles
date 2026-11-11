@@ -67,7 +67,7 @@ fi
 command -v fzf    >/dev/null && source <(fzf --zsh)
 
 # --- tools -----------------------------------------------------------------
-export PATH="$HOME/.local/bin:$PATH"          # jdtls wrapper, anything hand-installed
+export PATH="$HOME/.local/bin:$PATH"          # anything hand-installed
 
 # java/mvnd: put the current SDKMAN candidates on PATH instead of sourcing sdkman-init.sh (0.44s per tab).
 export SDKMAN_DIR="$HOME/.sdkman"
