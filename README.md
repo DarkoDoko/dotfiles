@@ -74,12 +74,15 @@ resolve to `$HOME` regardless of where the repo is checked out.
   overrides. For example, the work overlay turns off commit signing.
 - **Commit signing: SSH-based (`gpg.format = ssh`), not GPG.** Reuses the
   GitHub auth key instead of a separate GPG key/tooling. `user.signingkey`
-  points at the personal GitHub public key; verification uses
-  `~/.ssh/allowed_signers` (not tracked in this repo — machine-local,
-  regenerated from the pubkey on each machine, see below).
+  lives in `~/.gitconfig-personal` (not tracked in this repo — machine-local,
+  points at the personal GitHub public key, see below) and is pulled in via an
+  `[include]` in `git/.gitconfig`; verification uses `~/.ssh/allowed_signers`
+  (also not tracked, regenerated from the pubkey on each machine). A missing
+  include file is silently ignored, so machines without one simply have no
+  signing key set.
 - **SSH key naming isn't fixed.** Use whatever the personal GitHub key is
-  called on the machine, and make `user.signingkey` in `git/.gitconfig` point
-  at its `.pub` file. `ssh/.ssh/add_config` shows the `github.com-personal`
+  called on the machine, and put its `.pub` path in `user.signingkey` in
+  `~/.gitconfig-personal`. `ssh/.ssh/add_config` shows the `github.com-personal`
   `Host` alias setup for machines that need both a work and a personal
   identity. Wire it in with `Include ~/.ssh/add_config` at the top of
   `~/.ssh/config` if needed.
@@ -136,6 +139,14 @@ These are recreated fresh on each machine, not stowed:
 - `~/.ssh/config` — `Host github.com` block pointing at the key above.
 - `~/.ssh/allowed_signers` — one line:
   `<email> <contents of the personal GitHub public key>`.
+- `~/.gitconfig-personal` — two lines, so the tracked `.gitconfig` stays
+  free of machine-specific key paths:
+  ```ini
+  [user]
+      signingkey = ~/.ssh/id_ed25519_github.pub
+  ```
+  Without this, `commit.gpgsign = true` fails with
+  `fatal: failed to write commit object` on every personal commit.
 - `~/.ssh/known_hosts` entry for `github.com` — verify against
   `gh api meta --jq '.ssh_keys[]'` before trusting, don't blindly accept.
 - `~/.sdkman` and `~/.nvm` — installed per the "language runtimes" bootstrap
