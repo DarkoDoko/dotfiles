@@ -1,7 +1,9 @@
 [user]
 	name = Darko Doko
 	email = darko.doko1@gmail.com
-	signingkey = ~/.ssh/id_ed25519_personal_github.pub
+
+[include]
+	path = ~/.gitconfig-personal
 
 [init]
 	defaultBranch = main
