@@ -46,7 +46,8 @@ default-root-container-orientation = 'auto'
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Move the mouse to the center of the window that gains focus
-on-focus-changed = ['move-mouse window-lazy-center']
+# and notify sketchybar so the window_title item updates
+on-focus-changed = ['move-mouse window-lazy-center', 'exec-and-forget sketchybar --trigger aerospace_window_focus_change']
 
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key

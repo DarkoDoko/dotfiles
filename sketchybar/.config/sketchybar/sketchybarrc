@@ -35,6 +35,7 @@ sketchybar --default "${default[@]}"
 
 sketchybar --add event aerospace_workspace_change
 sketchybar --add event aerospace_mode_change
+sketchybar --add event aerospace_window_focus_change
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
@@ -45,6 +46,7 @@ for sid in $(aerospace list-workspaces --all); do
         background.height=20 \
         background.drawing=off \
         label="$sid" \
+        icon.font="sketchybar-app-font:Regular:16.0" \
         click_script="aerospace workspace $sid" \
         script="$CONFIG_DIR/plugins/aerospace.sh $sid"
 done
@@ -58,6 +60,17 @@ sketchybar --add item chevron left \
            --add item front_app left \
            --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
            --subscribe front_app front_app_switched
+
+##### Focused Window Title #####
+# Shows the focused window's title with its app icon. Updates on workspace
+# change, on aerospace focus change (triggered from aerospace.toml's
+# on-focus-changed), and on macOS front app switches.
+
+sketchybar --add item window_title left \
+           --set window_title icon.font="sketchybar-app-font:Regular:16.0" \
+                             label.max_chars=40 \
+                             script="$PLUGIN_DIR/window_title.sh" \
+           --subscribe window_title aerospace_workspace_change front_app_switched aerospace_window_focus_change
 
 ##### Adding Aerospace Mode Indicator #####
 # Aerospace has no native "mode changed" callback, so each keybinding that
