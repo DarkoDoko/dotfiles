@@ -45,6 +45,9 @@ default-root-container-orientation = 'auto'
 # Fallback value (if you omit the key): on-focused-monitor-changed = []
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
+# Move the mouse to the center of the window that gains focus
+on-focus-changed = ['move-mouse window-lazy-center']
+
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
 # Also see: https://nikitabobko.github.io/AeroSpace/goodies#disable-hide-app
@@ -58,6 +61,16 @@ persistent-workspaces = ["1", "2", "3", "8", "I", "F", "T"]
 
 on-window-detected = [
 
+    # Floating windows
+    {
+        if = 'test %{app-bundle-id} = com.apple.systempreferences',
+        run = ['layout floating'],
+    },
+    {
+        if = 'test %{window-title} ~= "Picture in Picture"',
+        run = ['layout floating'],
+    },
+
     # Terminals
     {
         if = 'test %{app-bundle-id} = com.googlecode.iterm2',
@@ -65,6 +78,10 @@ on-window-detected = [
     },
     {
         if = 'test %{app-bundle-id} = app.supabit.supacode',
+        run = ['move-node-to-workspace T'],
+    },
+    {
+        if = 'test %{app-bundle-id} = com.mitchellh.ghostty',
         run = ['move-node-to-workspace T'],
     },
 
@@ -151,7 +168,7 @@ on-window-detected = [
     inner.vertical =   2
     outer.left =       2
     outer.bottom =     2
-    outer.top =        28
+    outer.top =        [{ monitor.main = 28 }, 2]
     outer.right =      2
 
 # 'main' binding mode declaration
@@ -238,6 +255,21 @@ on-window-detected = [
     alt-tab = 'workspace-back-and-forth'
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
     alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+    # Reload the config without entering service mode
+    alt-shift-c = 'reload-config'
+
+    # Cycle focus through monitors
+    alt-m = 'focus-monitor next'
+
+    # Equalize sizes of all windows in the current workspace
+    alt-b = 'balance-sizes'
+
+    # Toggle floating for the focused window
+    alt-shift-space = 'layout floating tiling'
+
+    # Toggle the workspace layout between tiles and accordion
+    alt-g = 'layout tiles accordion'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#mode
     alt-shift-semicolon = ['mode service', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=service']
