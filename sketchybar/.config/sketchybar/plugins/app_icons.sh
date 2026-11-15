@@ -26,6 +26,10 @@ icon_for() {
     "Slack") echo "" ;;
     "Microsoft Teams") echo "" ;;
     "Mail") echo "" ;;
+    "Proton Mail") echo "" ;;
+    "Proton Drive") echo "" ;;
+    "Proton Pass") echo "" ;;
+    "Proton VPN") echo "" ;;
     "Luki") echo "" ;;
     "Music") echo "" ;;
     "Claude") echo "" ;;

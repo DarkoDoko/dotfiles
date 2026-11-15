@@ -99,6 +99,16 @@ sketchybar --add item mode_indicator left \
 # volume is registered. More info about the event system can be found here:
 # https://felixkratz.github.io/SketchyBar/config/events
 
+##### Now Playing (Apple Music) #####
+# Polls Music.app every 3s; hidden when nothing is playing.
+# Click on the item toggles play/pause.
+
+sketchybar --add item media right \
+           --set media update_freq=3 \
+                     label.max_chars=35 \
+                     click_script="osascript -e 'tell application \"Music\" to playpause'" \
+                     script="$PLUGIN_DIR/media.sh"
+
 sketchybar --add item clock right \
            --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
            --add item volume right \
