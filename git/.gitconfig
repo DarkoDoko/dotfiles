@@ -12,7 +12,11 @@
 	rebase = false
 
 [core]
-	editor = nano
+	editor = nvim
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
 
 [gpg]
 	format = ssh
@@ -23,6 +27,13 @@
 [gpg "ssh"]
 	allowedSignersFile = ~/.ssh/allowed_signers
 
+[delta]
+	navigate = true
+	dark = true
+[merge]
+	conflictStyle = zdiff3
+
 # Keep last: later settings win, so the work overlay must come after everything it overrides.
 [includeIf "gitdir:~/work/"]
 	path = ~/.gitconfig-work
+
