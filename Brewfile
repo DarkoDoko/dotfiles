@@ -35,6 +35,7 @@ brew "gh"                         # also used by the per-machine SSH key setup
 brew "git-delta"
 brew "lazygit"
 brew "neovim"
+brew "tree-sitter-cli"            # nvim-treesitter (main branch) needs it to build parsers
 brew "tmux"
 
 # --- JVM support tooling ---
